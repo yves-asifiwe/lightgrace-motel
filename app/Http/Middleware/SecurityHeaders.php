@@ -13,6 +13,11 @@ class SecurityHeaders
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Force HTTPS redirect if not already secure
+        if (!$request->secure() && app()->environment('production')) {
+            return redirect()->secure($request->getRequestUri());
+        }
+
         $response = $next($request);
 
         // Prevent clickjacking attacks
@@ -36,8 +41,8 @@ class SecurityHeaders
             "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self';"
         );
 
-        // HTTP Strict Transport Security
-        $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        // HTTP Strict Transport Security - enforce HTTPS for 1 year
+        $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
 
         return $response;
     }
