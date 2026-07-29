@@ -83,5 +83,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AdminController::class, 'recipientDashboard'])->name('recipient.dashboard');
     });
 });
+Route::get('/migrate-seed', function () {
+    Artisan::call('migrate:fresh', ['--seed' => true]);
+    return "Migration and seeding completed successfully.";
+});
+Route::get('/migrate-seed', function () {
+    Artisan::call('migrate:fresh', ['--seed' => true]);
+    return "Migration and seeding completed successfully.";
+});
+Route::get('/clear', function () {
+    Artisan::call('config:cache');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
 
+    return "Caches cleared and config cached successfully.";
+});
 require __DIR__.'/auth.php';
