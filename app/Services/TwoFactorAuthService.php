@@ -20,11 +20,19 @@ class TwoFactorAuthService
         $timestamp = now()->format('YmdHis');
         $uniqueId = Str::random(8);
 
-        Mail::raw("Your verification code is: {$otp}\n\nThis code will expire in 10 minutes.\n\nIf you did not request this code, please ignore this email.", function ($message) use ($user, $timestamp, $uniqueId) {
-            $message->to($user->email)
-                ->subject("Verification Code #{$uniqueId} - {$timestamp}")
-                ->from(config('mail.from.address'), config('mail.from.name'));
-        });
+        $body = "Your verification code is: {$otp}\n\nThis code will expire in 10 minutes.\n\nIf you did not request this code, please ignore this email.";
+
+        try {
+            Mail::raw($body, function ($message) use ($user, $timestamp, $uniqueId) {
+                $message->to($user->email)
+                        ->subject("Verification Code #{$uniqueId} - {$timestamp}")
+                        ->from(config('mail.from.address'), config('mail.from.name'));
+            });
+        } catch (\Throwable $e) {
+            // Log and rethrow so caller can handle the failure (controllers already catch exceptions)
+            \Log::error('2FA Send OTP Error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function storeOTP(User $user, string $otp): void
