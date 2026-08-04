@@ -33,11 +33,25 @@
     <div class="rooms-grid">
         @foreach($rooms as $room)
         <div class="room-card">
-            @if($room->image)
+            @php
+                // Determine image URL with fallbacks:
+                // 1) storage disk public/rooms/<filename>
+                // 2) legacy public/uploads/rooms/<filename>
+                // 3) placeholder image
+                $imageUrl = asset('images/placeholder-room.png');
+                if ($room->image) {
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists('rooms/' . $room->image)) {
+                        $imageUrl = asset('storage/rooms/' . $room->image);
+                    } elseif (file_exists(public_path('uploads/rooms/' . $room->image))) {
+                        $imageUrl = asset('uploads/rooms/' . $room->image);
+                    }
+                }
+            @endphp
+
             <div class="room-image">
-                <img src="{{ asset('uploads/rooms/' . $room->image) }}" alt="{{ $room->name }}">
+                <img src="{{ $imageUrl }}" alt="{{ $room->name }}">
             </div>
-            @endif
+
             <div class="room-card-header">
                 <h3>{{ $room->name }}</h3>
                 <span class="room-price">{{ number_format($room->price) }} RWF</span>
@@ -62,7 +76,7 @@
     @else
     <div class="empty-state">
         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.125 1.125 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+            <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.[...]"/>
         </svg>
         <h3>No Rooms Found</h3>
         <p>Get started by adding your first room from the dashboard.</p>
