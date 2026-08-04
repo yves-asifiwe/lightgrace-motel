@@ -89,7 +89,7 @@
             <div class="card-header">
                 <div class="card-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68[...]"/>
                     </svg>
                 </div>
                 <h3>Administrators</h3>
@@ -98,7 +98,7 @@
                 <div class="admin-actions">
                     <a href="#add-admin" class="action-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 [...]"></path>
                         </svg>
                         Add Admin
                     </a>
@@ -152,7 +152,7 @@
             <div class="card-header">
                 <div class="card-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.6[...]"/>
                     </svg>
                 </div>
                 <h3>Account Settings</h3>
@@ -174,12 +174,17 @@
             </div>
             <div class="card-body">
                 <p style="margin-bottom: 1rem; color: #4b5563;">Add an extra layer of security to your account with two-factor authentication.</p>
-                @if(auth()->user()->hasTwoFactorEnabled())
-                    <span class="badge enabled">Enabled</span>
+                @if (Route::has('2fa.manage'))
+                    @if(auth()->user()->hasTwoFactorEnabled())
+                        <span class="badge enabled">Enabled</span>
+                    @else
+                        <span class="badge disabled">Disabled</span>
+                    @endif
+                    <a href="{{ route('2fa.manage') }}" class="btn btn-secondary">Manage 2FA</a>
                 @else
                     <span class="badge disabled">Disabled</span>
+                    <p style="margin-top: .5rem; color: #6b7280;">Two-factor authentication is not available in this deployment.</p>
                 @endif
-                <a href="{{ route('2fa.manage') }}" class="btn btn-secondary">Manage 2FA</a>
             </div>
         </div>
     </div>
