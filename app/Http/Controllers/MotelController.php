@@ -37,10 +37,10 @@ class MotelController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/rooms'), $imageName);
-            $data['image'] = $imageName;
+            // store in storage/app/public/rooms
+            $path = $request->file('image')->store('rooms', 'public');
+            // store only the filename for compatibility with views
+            $data['image'] = basename($path);
         }
 
         motelmodel::create($data);
@@ -80,15 +80,13 @@ class MotelController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($room->image && file_exists(public_path('uploads/rooms/' . $room->image))) {
-                unlink(public_path('uploads/rooms/' . $room->image));
+            // Delete old image if exists in storage
+            if ($room->image && Storage::disk('public')->exists('rooms/' . $room->image)) {
+                Storage::disk('public')->delete('rooms/' . $room->image);
             }
 
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/rooms'), $imageName);
-            $data['image'] = $imageName;
+            $path = $request->file('image')->store('rooms', 'public');
+            $data['image'] = basename($path);
         }
 
         $room->update($data);
@@ -100,9 +98,9 @@ class MotelController extends Controller
     {
         $room = motelmodel::findOrFail($id);
 
-        // Delete image if exists
-        if ($room->image && file_exists(public_path('uploads/rooms/' . $room->image))) {
-            unlink(public_path('uploads/rooms/' . $room->image));
+        // Delete image if exists in storage
+        if ($room->image && Storage::disk('public')->exists('rooms/' . $room->image)) {
+            Storage::disk('public')->delete('rooms/' . $room->image);
         }
 
         $room->delete();
