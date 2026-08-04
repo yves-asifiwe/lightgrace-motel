@@ -18,27 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         // Create manager user with known credentials
         User::create([
-            'name' => 'Manager User',
-            'email' => 'manager@lightgrace.com',
-            'password' => Hash::make('password123'),
+            'name' => 'yves asifiwe',
+            'email' => 'yvesasifiwe00@gmail.com',
+            'password' => Hash::make('10/3/2009'),
             'role' => 'manager',
         ]);
 
-        // Create admin user with known credentials
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@lightgrace.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-        ]);
-
-        // Create recipient user with known credentials
-        User::create([
-            'name' => 'Recipient User',
-            'email' => 'recipient@lightgrace.com',
-            'password' => Hash::make('password123'),
-            'role' => 'recipient',
-        ]);
 
         // User::factory(10)->create();
     }
