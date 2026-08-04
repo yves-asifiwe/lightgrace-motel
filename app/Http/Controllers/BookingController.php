@@ -7,6 +7,8 @@ use App\Models\motelmodel;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -56,6 +58,10 @@ class BookingController extends Controller
         ]);
 
         $room = motelmodel::find($request->room_id);
+        if (!$room) {
+            return redirect()->back()->with('error', 'Selected room not found.')->withInput();
+        }
+
         $checkIn = \Carbon\Carbon::parse($request->check_in);
         $checkOut = \Carbon\Carbon::parse($request->check_out);
         $days = $checkIn->diffInDays($checkOut);
@@ -81,19 +87,31 @@ class BookingController extends Controller
             $bookingData['booking_status'] = 'confirmed';
         }
 
+        DB::beginTransaction();
         try {
             $booking = Booking::create($bookingData);
-
-            // Send confirmation email if payment is marked as paid
-            if ($request->payment_status === 'paid') {
-                $booking->load('room');
-                Mail::to($booking->customer_email)->send(new BookingConfirmationMail($booking));
-            }
-
-            return redirect()->route('admin.bookings')->with('success', 'Booking created successfully');
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Booking creation failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to create booking: ' . $e->getMessage())->withInput();
         }
+
+        // Attempt to send confirmation email but do not fail the booking creation if mail fails
+        if ($request->payment_status === 'paid') {
+            try {
+                $booking->load('room');
+                Mail::to($booking->customer_email)->send(new BookingConfirmationMail($booking));
+            } catch (\Throwable $e) {
+                Log::error('Booking confirmation email failed: ' . $e->getMessage());
+                // Provide a warning to the user but keep booking successful
+                return redirect()->route('admin.bookings')
+                    ->with('success', 'Booking created successfully')
+                    ->with('warning', 'Booking created but confirmation email failed to send.');
+            }
+        }
+
+        return redirect()->route('admin.bookings')->with('success', 'Booking created successfully');
     }
 
     public function show(Booking $booking)
@@ -125,8 +143,12 @@ class BookingController extends Controller
 
         // Send confirmation email when payment is marked as paid
         if ($oldPaymentStatus !== 'paid' && $request->payment_status === 'paid') {
-            $booking->load('room');
-            Mail::to($booking->customer_email)->send(new BookingConfirmationMail($booking));
+            try {
+                $booking->load('room');
+                Mail::to($booking->customer_email)->send(new BookingConfirmationMail($booking));
+            } catch (\Throwable $e) {
+                Log::error('Booking confirmation email failed on status update: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('admin.bookings')->with('success', 'Booking status updated successfully');
