@@ -111,7 +111,7 @@
                     </a>
                 </div>
 
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
                 <div id="add-admin" class="add-admin-form">
                     <h4>Add New Admin</h4>
                     <form action="{{ route('admin.storeAdmin') }}" method="POST" class="room-form">
