@@ -15,28 +15,17 @@ Route::get('/dashboard', [AdminController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Two-Factor Authentication verification (no auth required - used during login)
-Route::get('/2fa/verify', [TwoFactorAuthController::class, 'showVerificationForm'])->name('2fa.verify');
-Route::post('/2fa/verify', [TwoFactorAuthController::class, 'verify']);
-
-// Two-Factor Authentication setup (no auth required - used during forced setup)
-Route::get('/2fa/setup', [TwoFactorAuthController::class, 'showSetupForm'])->name('2fa.setup');
-Route::post('/2fa/setup', [TwoFactorAuthController::class, 'setup']);
+// Removed Two-Factor Authentication routes. Login now uses email & password only.
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Two-Factor Authentication management routes (require auth)
-    Route::prefix('2fa')->name('2fa.')->group(function () {
-        Route::get('/manage', [TwoFactorAuthController::class, 'showManageForm'])->name('manage');
-        Route::post('/disable', [TwoFactorAuthController::class, 'disable'])->name('disable');
-        Route::post('/regenerate-codes', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('regenerate-codes');
-    });
+    // Two-Factor Authentication management routes removed.
     
     // Admin routes (accessible by admin and manager)
-    Route::prefix('admin')->middleware('2fa')->group(function () {
+    Route::prefix('admin')->group(function () {
         // Dashboard (Room management)
         Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('role:admin,manager');
         Route::get('/rooms/create', [MotelController::class, 'create'])->name('rooms.create')->middleware('role:admin,manager');
@@ -67,7 +56,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Manager routes
-    Route::prefix('manager')->middleware(['role:manager', '2fa'])->group(function () {
+    Route::prefix('manager')->middleware('role:manager')->group(function () {
         Route::get('/', [AdminController::class, 'managerDashboard'])->name('manager.dashboard');
         Route::get('/rooms', [AdminController::class, 'managerRooms'])->name('manager.rooms');
         Route::get('/rooms/create', [MotelController::class, 'create'])->name('manager.rooms.create');
@@ -79,7 +68,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Recipient routes
-    Route::prefix('recipient')->middleware(['role:recipient', '2fa'])->group(function () {
+    Route::prefix('recipient')->middleware('role:recipient')->group(function () {
         Route::get('/', [AdminController::class, 'recipientDashboard'])->name('recipient.dashboard');
     });
 });
