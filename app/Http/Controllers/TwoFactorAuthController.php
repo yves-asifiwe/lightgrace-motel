@@ -15,78 +15,78 @@ class TwoFactorAuthController extends Controller
         $this->twoFactorAuth = $twoFactorAuth;
     }
 
-public function showVerificationForm()
-{
-    $userId = session('2fa_user_id');
+    public function showVerificationForm()
+    {
+        $userId = session('2fa_user_id');
 
-    if (!$userId) {
-        return redirect()->route('login')
-            ->with('error', 'Session expired. Please login again.');
-    }
+        if (!$userId) {
+            return redirect()->route('login')
+                ->with('error', 'Session expired. Please login again.');
+        }
 
-    $user = \App\Models\User::find($userId);
-
-    if (!$user) {
-        return redirect()->route('login')
-            ->with('error', 'User not found.');
-    }
-
-    $otp = $this->twoFactorAuth->generateOTP();
-    $this->twoFactorAuth->storeOTP($user, $otp);
-
-    try {
-        $this->twoFactorAuth->sendOTP($user, $otp);
-    } catch (\Throwable $e) {
-        \Log::error('2FA Verification Email Error: '.$e->getMessage());
-
-        return redirect()->route('login')
-            ->with('error', 'Unable to send verification code. Please contact the administrator.');
-    }
-
-    return view('auth.2fa-verify');
-}
-   public function showSetupForm()
-{
-    $userId = session('2fa_user_id');
-    $user = Auth::user();
-
-    if (!$user && $userId) {
         $user = \App\Models\User::find($userId);
 
         if (!$user) {
             return redirect()->route('login')
-                ->with('error', 'Session expired. Please login again.');
-        }
-    }
-
-    if (!$user) {
-        return redirect()->route('login')
-            ->with('error', 'Please login first to setup 2FA.');
-    }
-
-    if ($user->hasTwoFactorEnabled()) {
-        if (Auth::check()) {
-            return redirect()->route('2fa.manage')
-                ->with('info', '2FA is already enabled.');
+                ->with('error', 'User not found.');
         }
 
-        return redirect()->route('2fa.verify');
+        $otp = $this->twoFactorAuth->generateOTP();
+        $this->twoFactorAuth->storeOTP($user, $otp);
+
+        try {
+            $this->twoFactorAuth->sendOTP($user, $otp);
+        } catch (\Throwable $e) {
+            \Log::error('2FA Verification Email Error: '.$e->getMessage());
+
+            return redirect()->route('login')
+                ->with('error', 'Unable to send verification code. Please contact the administrator.');
+        }
+
+        return view('auth.2fa-verify');
     }
 
-    $otp = $this->twoFactorAuth->generateOTP();
-    $this->twoFactorAuth->storeOTP($user, $otp);
+    public function showSetupForm()
+    {
+        $userId = session('2fa_user_id');
+        $user = Auth::user();
 
-    try {
-        $this->twoFactorAuth->sendOTP($user, $otp);
-    } catch (\Throwable $e) {
-        \Log::error('2FA Setup Email Error: '.$e->getMessage());
+        if (!$user && $userId) {
+            $user = \App\Models\User::find($userId);
 
-        return redirect()->route('login')
-            ->with('error', 'Unable to send OTP email. Please check the mail configuration.');
-    }
+            if (!$user) {
+                return redirect()->route('login')
+                    ->with('error', 'Session expired. Please login again.');
+            }
+        }
 
-    return view('auth.2fa-setup');
-}
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', 'Please login first to setup 2FA.');
+        }
+
+        if ($user->hasTwoFactorEnabled()) {
+            if (Auth::check()) {
+                return redirect()->route('2fa.manage')
+                    ->with('info', '2FA is already enabled.');
+            }
+
+            return redirect()->route('2fa.verify');
+        }
+
+        $otp = $this->twoFactorAuth->generateOTP();
+        $this->twoFactorAuth->storeOTP($user, $otp);
+
+        try {
+            $this->twoFactorAuth->sendOTP($user, $otp);
+        } catch (\Throwable $e) {
+            \Log::error('2FA Setup Email Error: '.$e->getMessage());
+
+            return redirect()->route('login')
+                ->with('error', 'Unable to send OTP email. Please check the mail configuration.');
+        }
+
+        return view('auth.2fa-setup');
     }
 
     public function setup(Request $request)
