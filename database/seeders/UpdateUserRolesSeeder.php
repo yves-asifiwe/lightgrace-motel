@@ -21,9 +21,9 @@ class UpdateUserRolesSeeder extends Seeder
         } else {
             // Create admin if doesn't exist
             User::create([
-                'name' => 'Admin User',
-                'email' => 'admin@lightgrace.com',
-                'password' => Hash::make('password123'),
+                'name' => 'katos',
+                'email' => 'katosmedia250@gmail.com',
+                'password' => Hash::make('10/3/2009'),
                 'role' => 'admin',
             ]);
         }
@@ -34,9 +34,9 @@ class UpdateUserRolesSeeder extends Seeder
             $manager->update(['role' => 'manager']);
         } else {
             User::create([
-                'name' => 'Manager User',
-                'email' => 'manager@lightgrace.com',
-                'password' => Hash::make('password123'),
+                'name' => 'yves asifiwe',
+                'email' => 'yvesasifiwe00.com',
+                'password' => Hash::make('10/3/2009'),
                 'role' => 'manager',
             ]);
         }
