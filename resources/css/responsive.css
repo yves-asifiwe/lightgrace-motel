@@ -1,0 +1,104 @@
+/* resources/css/responsive.css - mobile-first responsive utilities and admin layout adjustments */
+:root{
+  --container-max: 1200px;
+  --gutter: 1rem;
+  --sidebar-width: 260px;
+  --break-sm: 640px;
+  --break-md: 768px;
+  --break-lg: 1024px;
+  --base-font: 16px;
+}
+
+/* Global resets useful for responsiveness */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:inherit}
+
+/* Make images and media responsive */
+img, picture, video { max-width:100%; height:auto; display:block; }
+
+/* Layout: admin container */
+.admin-layout{display:flex;min-height:100vh}
+
+/* Sidebar (mobile-first: hidden off-canvas) */
+.sidebar{
+  position:fixed;inset:0 0 0 0; /* fills viewport by default for easy accessibility */
+  width:var(--sidebar-width);
+  max-width:80vw;
+  background:#ffffff;
+  border-right:1px solid #e5e7eb;
+  padding:1rem;
+  transform:translateX(-110%);
+  transition:transform .25s ease-in-out,box-shadow .25s;
+  z-index:1200;
+  overflow:auto;
+}
+.sidebar.active{ transform:translateX(0); box-shadow:0 8px 20px rgba(2,6,23,0.08); }
+
+/* Sidebar header/footer/menu spacing */
+.sidebar-header{padding-bottom:0.5rem;margin-bottom:0.5rem}
+.sidebar-menu{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.25rem}
+.sidebar-menu a{display:block;padding:.6rem .5rem;border-radius:6px;color:#111827;text-decoration:none}
+.sidebar-menu a.active{background:#f3f4f6;font-weight:600}
+.sidebar-footer{margin-top:1rem}
+.logout-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .6rem;border:none;background:#fff;border-radius:6px}
+
+/* Mobile menu toggle button */
+.mobile-menu-toggle{
+  position:fixed;left:12px;top:12px;z-index:1300;background:#111827;color:#fff;border:none;padding:.5rem;border-radius:8px;display:block
+}
+
+/* Main content wrapper (shifts when sidebar opens) */
+.main-wrapper{
+  flex:1;min-height:100vh;margin-left:0;transition:margin-left .25s ease-in-out; width:100%;
+}
+.main-wrapper.shifted{ margin-left: var(--sidebar-width); }
+
+/* Top navbar inside main wrapper */
+.top-navbar{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;border-bottom:1px solid #e5e7eb;background:#fff;}
+.page-title h2{margin:0;font-size:1.125rem}
+.user-info{display:flex;align-items:center;gap:.75rem}
+.user-avatar{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#f3f4f6}
+
+/* Main content padding */
+.main-content{padding:1rem}
+
+/* Responsive utilities: container, grid, cards */
+.container{width:100%;padding-left:var(--gutter);padding-right:var(--gutter);margin-left:auto;margin-right:auto}
+@media (min-width: var(--break-lg)){
+  .container{max-width:var(--container-max)}
+}
+
+.row{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:768px){ .row-cols-2{grid-template-columns:repeat(2,1fr);} }
+@media(min-width:1024px){ .row-cols-3{grid-template-columns:repeat(3,1fr);} }
+
+.card{background:#fff;border-radius:8px;padding:0;overflow:hidden;box-shadow:0 1px 6px rgba(2,6,23,0.06);display:flex;flex-direction:column}
+.card img{width:100%;height:auto;display:block}
+
+/* Buttons */
+.btn{display:inline-block;padding:.6rem 1rem;border-radius:8px;text-decoration:none;font-weight:600}
+@media(max-width:640px){ .btn{padding:.85rem 1.1rem;font-size:1rem} }
+
+/* Small screens: hide desktop-only pieces and ensure body scroll when sidebar open */
+@media (max-width: 767px){
+  .mobile-menu-toggle{display:block}
+  .sidebar{height:100vh}
+  body.sidebar-open{overflow:hidden}
+  .top-navbar .page-title h2{font-size:1rem}
+}
+
+/* Desktop: show sidebar as normal column */
+@media (min-width: 768px){
+  .sidebar{position:static;transform:none;width:var(--sidebar-width);max-width:none;height:auto;border-right:none;box-shadow:none}
+  .sidebar.active{transform:none}
+  .mobile-menu-toggle{display:none}
+  .main-wrapper{margin-left:var(--sidebar-width)}
+}
+
+/* Accessibility helpers */
+.visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+/* Helper classes */
+.stack{display:flex;flex-direction:column;gap:1rem}
+.center{text-align:center}
+.is-hidden{display:none!important}
