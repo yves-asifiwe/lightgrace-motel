@@ -9,7 +9,7 @@
 <body>
     <div class="admin-layout">
         <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
             </svg>
@@ -31,7 +31,7 @@
                 <li><a href="{{ route('profile.edit') }}" class="{{ request()->is('profile') ? 'active' : '' }}">Profile & Password</a></li>
             </ul>
             <div class="sidebar-footer">
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
                     @csrf
                     <button type="submit" class="logout-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -70,8 +70,8 @@
                 @yield('content')
             </main>
 
-            <footer style="margin-top: 24px; padding: 18px 20px; text-align: center; font-size: 0.92rem; color: #6b7280; border-top: 1px solid #e5e7eb; background: linear-gradient(90deg, rgba(255,248,244,0.9), rgba(255,255,255,0.98)); border-radius: 16px 16px 0 0; box-shadow: 0 -4px 16px rgba(245, 48, 3, 0.06);">
-                <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; color: #111827; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.9); box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <footer style="margin-top: 24px; padding: 18px 20px; text-align: center; font-size: 0.92rem; color: #6b7280; border-top: 1px solid #e5e7eb; background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, rgba(248,249,250,0.5) 100%);">
+                <div style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; color: #111827; padding: 8px 12px; border-radius: 999px; background: rgb(255, 243, 224);">
                     <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #fff2ec; color: #f53003;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="4" y="4" width="16" height="16" rx="3"></rect>
@@ -81,10 +81,10 @@
                     </span>
                     <span>Developed by Yves Dev</span>
                 </div>
-                <a href="https://wa.me/250787821533" target="_blank" rel="noopener noreferrer" style="margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: white; text-decoration: none; font-weight: 700; padding: 8px 12px; border-radius: 999px; background: linear-gradient(90deg, #25d366, #128c7e); box-shadow: 0 6px 18px rgba(37, 211, 102, 0.24);">
+                <a href="https://wa.me/250787821533" target="_blank" rel="noopener noreferrer" style="margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: #10b981; text-decoration: none; font-weight: 600; transition: color 0.3s;">
                     <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.2);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.478-1.761-1.651-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.149-.174.199-.297.299-.495.099-.198.049-.372-.025-.521-.074-.149-.669-1.612-.916-2.207-.241-.58-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.521.074-.793.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.076 4.487.708.242 1.261.389 1.694.5.712.226 1.36.194 1.873.118.572-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.174-1.413-.074-.124-.273-.198-.57-.347z"></path>
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.869 1.176c-1.493.823-2.712 1.982-3.556 3.355-1.671 2.789-.923 6.385 1.849 8.514 1.423 1.031 3.054 1.626 4.78 1.626h.004c2.925 0 5.657-1.193 7.72-3.368 1.732-1.849 2.747-4.269 2.747-6.741 0-5.368-4.37-9.735-9.75-9.736"/>
                         </svg>
                     </span>
                     <span>Chat on WhatsApp</span>
@@ -94,32 +94,40 @@
     </div>
 
     <script>
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const mainWrapper = document.querySelector('.main-wrapper');
-            
-            sidebar.classList.toggle('active');
-            mainWrapper.classList.toggle('shifted');
+        // Mobile menu toggle functionality
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainWrapper = document.querySelector('.main-wrapper');
+
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mainWrapper.classList.toggle('shifted');
+            });
         }
+
+        // Close mobile menu when clicking on a menu item
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    mainWrapper.classList.remove('shifted');
+                }
+            });
+        });
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            
             if (window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
                     sidebar.classList.remove('active');
-                    document.querySelector('.main-wrapper').classList.remove('shifted');
+                    mainWrapper.classList.remove('shifted');
                 }
             }
         });
 
-        // Close mobile menu on window resize
+        // Close mobile menu on window resize to desktop
         window.addEventListener('resize', function() {
-            const sidebar = document.getElementById('sidebar');
-            const mainWrapper = document.querySelector('.main-wrapper');
-            
             if (window.innerWidth > 768) {
                 sidebar.classList.remove('active');
                 mainWrapper.classList.remove('shifted');
